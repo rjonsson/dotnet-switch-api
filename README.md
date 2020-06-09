@@ -29,5 +29,5 @@ Endpoint: [POST] /api/NetworkSwitches
 }
 ```
 
-Endpoint: [GET] /api/NetworkSwitches/{id}
+Endpoint: [GET] /api/NetworkSwitches/{id} 
 Endpoint: [GET] /api/NetworkSwitches
