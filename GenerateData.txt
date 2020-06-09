@@ -1,0 +1,25 @@
+﻿https://next.json-generator.com/
+
+{
+		name: 'se{{integer(1000, 3000)}}sw0{{integer(1,2)}}',
+		domain: 'domain.net',
+		ip: '10.{{integer(32,39)}}.{{integer(1,254)}}.{{integer(10,240)}}',
+		status: "{{integer(0,2)}}",
+		ports: [{ 
+      'repeat(8)': {
+			name: 'GigabitEthernet0/{{index(1)}}',
+			mode: '{{integer(0,1)}}',
+			shutdown: false,
+			vlans: [
+			{'repeat(1,2)': 
+				{
+					vlan: {
+               			id: '{{integer(1, 500)}}',
+               			name: 'VLan'
+              	}
+            }}
+           ]
+          }
+        }
+	]
+}
