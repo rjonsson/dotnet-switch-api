@@ -22,6 +22,8 @@ namespace switch_api
             Configuration = configuration;
         }
 
+        readonly string AllOrigins = "_allOrigins";
+
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -29,6 +31,19 @@ namespace switch_api
         {
             services.AddDbContext<NetworkSwitchContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+
+            services.AddCors(options =>
+            {
+                options.AddPolicy(name: AllOrigins,
+                                  builder =>
+                                  {
+                                      builder.AllowAnyOrigin();
+                                      builder.AllowAnyMethod();
+                                      builder.AllowAnyHeader();
+                                      //builder.AllowCredentials();
+                                  });
+            });
+
 
             services.AddControllers();
         }
@@ -40,6 +55,8 @@ namespace switch_api
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseCors(AllOrigins);
 
             app.UseRouting();
 

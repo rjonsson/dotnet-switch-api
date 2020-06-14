@@ -26,14 +26,11 @@ namespace switch_api.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<NetworkSwitch>>> GetNetworkSwitches()
         {
-
-
             return await _context.NetworkSwitches
                                         .Include(sw => sw.Ports)
                                             .ThenInclude(p => p.Vlans)
                                                 .ThenInclude(pv => pv.Vlan)
                                         .ToListAsync();
-
         }
 
         // GET: api/NetworkSwitches/5
@@ -48,13 +45,6 @@ namespace switch_api.Controllers
                                                       .ThenInclude(pv => pv.Vlan)
                                               .SingleOrDefaultAsync(sw => sw.Id == id);
             
-            /*
-            var cartIncludingItems = _context.
-                
-                .Include(cart => cart.Items).ThenInclude(row => row.Item).First(cart => cart.Id == 1);
-            */
-
-
             if (networkSwitch == null)
             {
                 return NotFound();
@@ -101,8 +91,6 @@ namespace switch_api.Controllers
         [HttpPost]
         public async Task<ActionResult<NetworkSwitch>> PostNetworkSwitch(NetworkSwitch networkSwitch)
         {
-
-
             // Add all vlans from the switch to a list and check if it needs creating
             List<Vlan> vlans = new List<Vlan>();
             networkSwitch.Ports.ForEach(port =>
@@ -114,8 +102,9 @@ namespace switch_api.Controllers
                                })));
 
             // Compare with database list and add missing vlans to db
-            var existingVlans = _context.Vlans.ToList();
-            vlans.RemoveAll(vlan => existingVlans.Exists(existing => existing.Id == vlan.Id));
+            vlans.RemoveAll(vlan => 
+                    _context.Vlans.ToList()
+                                  .Exists(existing => existing.Id == vlan.Id));
             vlans.ForEach(vlan => _context.Vlans.Add(vlan));
             await _context.SaveChangesAsync();
 
@@ -130,13 +119,10 @@ namespace switch_api.Controllers
                 }
             });
                 
-
-
             _context.NetworkSwitches.Add(networkSwitch);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction(nameof(GetNetworkSwitch), new { id = networkSwitch.Id }, networkSwitch);
-            //return CreatedAtAction(nameof(GetNetworkSwitch), new { id = networkSwitch.Id }, networkSwitch);
         }
 
         // DELETE: api/NetworkSwitches/5
